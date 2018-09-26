@@ -1,0 +1,159 @@
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="helpModalTitle">Information about "{{ repo }}"</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div ng-switch="repo">
+                    <div ng-switch-when="archlinux">
+                        <p>Line for <code>mirrorlist</code> configuration file</p>
+                        <pre><code>Server = http://mirror.ufro.cl/archlinux/$repo/os/$arch</code></pre>
+                    </div>
+                    <div ng-switch-when="centos">
+                        <p>Full CentOS mirror.</p>
+                        <p>
+                            CentOS 7 ISO files can be found at
+                            <a href="https://mirror.ufro.cl/centos/7/isos/x86_64/">aquí</a>.
+                        </p>
+                    </div>
+                    <div ng-switch-when="debian">
+			    <p>Debian mirror for architectures: <code>all amd64 arm64 armel armhf hurd-i386 i386 ia64 kfreebsd-amd64 kfreebsd-i386 mips mips64el powerpc ppc64el source</code>.</p>
+                        <p>Deb lines for <code>stretch</code>:</p>
+                        <p class="scroll-y"><pre>
+<code>deb http://mirror.ufro.cl/debian/ stretch main contrib
+deb-src http://mirror.ufro.cl/debian/ stretch main contrib
+
+deb http://mirror.ufro.cl/debian/ stretch-updates main contrib
+deb-src http://mirror.ufro.cl/debian/ stretch-updates main contrib
+
+deb http://mirror.ufro.cl/debian stretch-backports main contrib
+deb-src http://mirror.ufro.cl/debian stretch-backports main contrib</code>
+                        </pre></p>
+                    </div>
+                    <div ng-switch-when="debian-cd">
+                        <p>Debian ISO files and releases stuff.</p>
+                        <p>
+                            Direct links:
+                            <ul>
+                                <li><a href="https://mirror.ufro.cl/debian-cd/9.5.0-live/amd64/iso-hybrid/">Directorio de ISOs live 9.5.0 amd64</a></li>
+                                <li>
+                                    <a href="https://mirror.ufro.cl/debian-cd/9.5.0/amd64/iso-cd/debian-9.5.0-amd64-netinst.iso">ISO netinst 9.5.0 amd64</a>
+                                    <p class="scroll-y">SHA256: <code>1f97a4b8dee7c3def5cd8215ff01b9edef27c901b28fa8b1ef4f022eff7c36c2</code></p>
+                                </li>
+                            </ul>
+                        </p>
+                    </div>
+                    <div ng-switch-when="epel">
+                        <p>Fedora's Extra Packages for Enterprise Linux (EPEL) full mirror.</p>
+                    </div>
+                    <div ng-switch-when="fedora">
+                        <p>Fedora full mirror.</p>
+                        <p>
+                            Direct links:
+                            <ul>
+                                <li>
+                                    <a href="https://mirror.ufro.cl/fedora/linux/releases/28/Workstation/x86_64/iso/Fedora-Workstation-Live-x86_64-28-1.1.iso">ISO 28 Workstation Live x86_64</a>
+                                    <p class="scroll-y">SHA256: <code>bd5c9ee34b7698eb0852a320da4fbdf616222a493d99f6054aa96afa96207bfb</code></p>
+                                </li>
+                                <li>
+                                    <a href="https://mirror.ufro.cl/fedora/linux/releases/28/Workstation/x86_64/iso/Fedora-Workstation-netinst-x86_64-28-1.1.iso">ISO 28 Workstation netinst x86_64</a>
+                                    <p class="scroll-y">SHA256: <code>34da8b46b23d786bb1d43a77a4dcd713c446fc70a4ace0c6f52e43b086350562</code></p>
+                                </li>
+                            </ul>
+                        </p>
+                    </div>
+                    <div ng-switch-when="gentoo">
+                        <p>Gentoo full mirror.</p>
+                        <p>
+                            Direct liks:
+                            <ul>
+                                <li>
+                                    <a href="https://mirror.ufro.cl/gentoo/releases/amd64/20170118/livedvd-amd64-hardened-nomultilib-20170118.iso">livedvd-amd64-hardened-nomultilib-20170118.iso</a>
+                                    <p class="scroll-y">SHA512: <code>75857eda73bcc05c9763c78ef953f8e26727c98923644d6afd70014c3e4fee2263ff214ac1cdcd20d1b1d67817bbaf3cd810c074b397ad4d46e73e97517c7502</code></p>
+                                </li>
+                            </ul>
+                        </p>
+                    </div>
+                    <div ng-switch-when="ius">
+                        <p>IUS Community Project full mirror</p>
+                        <p>
+                            <blockquote class="blockquote">
+                                <strong>I</strong>nline with <strong>U</strong>pstream <strong>S</strong>table
+                            </blockquote>
+                        </p>
+                    </div>
+                    <div ng-switch-when="linuxmint">
+                        Linux Mint full mirror.
+                    </div>
+                    <div ng-switch-when="linuxmint-cd">
+                        <p>Linux Mint releases (ISO files) full mirror.</p>
+                        <p>
+                           Linux Mint 19 Tara v2 (64bit) ISO files:
+                            <ul>
+                                <li>
+                                    <a href="https://mirror.ufro.cl/linuxmint-cd/stable/19/linuxmint-19-cinnamon-64bit-v2.iso">Cinnamon</a>
+                                    <p class="scroll-y">SHA256: <code>c92a9baafdd599da057a97236f0a853ce1f8b3c7ad41e652ceba493f9ca5623f</code></p>
+                                </li>
+                                <li>
+                                    <a href="https://mirror.ufro.cl/linuxmint-cd/stable/19/linuxmint-19-mate-64bit-v2.iso">Mate</a>
+                                    <p class="scroll-y">SHA256: <code>f8164654b7600ced1aa8ef6abee2e56620388b0baa161d7b17699f425223d7c7</code></p>
+                                </li>
+                                <li>
+                                    <a href="https://mirror.ufro.cl/linuxmint-cd/stable/19/linuxmint-19-xfce-64bit-v2.iso">XFCE</a>
+                                    <p class="scroll-y">SHA256: <code>c996a0de1e010476f36ed55322cb055b07d3bd507f0c60eff65b07634f20f897</code></p>
+                                </li>
+                            </ul>
+                        </p>
+                    </div>
+                    <div ng-switch-when="manjaro">
+                        <p>Manjaro full mirror.</p>
+                    </div>
+                    <div ng-switch-when="raspbian">
+                        <p>Raspbian full mirror.</p>
+                    </div>
+                    <div ng-switch-when="ubuntu">
+                        <p>Ubuntu full archive mirror.</p>
+                    </div>
+                    <div ng-switch-when="ubuntu-releases">
+                        <p>Ubuntu releases (ISO files and stuff) full mirror.</p>
+                        <p>
+                            ISOs amd64:
+                            <ul>
+                                <li>
+                                    <a href="https://mirror.ufro.cl/ubuntu-releases/18.04/ubuntu-18.04-desktop-amd64.iso">18.04 LTS desktop</a>
+                                    <p class="scroll-y">SHA256: <code>a55353d837cbf7bc006cf49eeff05ae5044e757498e30643a9199b9a25bc9a34</code></p>
+                                </li>
+                                <li>
+                                    <a href="https://mirror.ufro.cl/ubuntu-releases/18.04/ubuntu-18.04-live-server-amd64.iso">18.04 live server</a></p>
+                                    <p class="scroll-y">SHA256: <code>7a1c2966f82268c14560386fbc467d58c3fbd2793f3b1f657baee609b80d39a8</code>
+                                </li>
+                                <li>
+                                    <a href="https://mirror.ufro.cl/ubuntu-releases/16.04.4/ubuntu-16.04.4-desktop-amd64.iso">16.04.4 LTS desktop</a></p>
+                                    <p class="scroll-y">SHA256: <code>3380883b70108793ae589a249cccec88c9ac3106981f995962469744c3cbd46d</code>
+                                </li>
+                                <li>
+                                    <a href="https://mirror.ufro.cl/ubuntu-releases/16.04.4/ubuntu-16.04.4-server-amd64.iso">16.04.4 LTS server</a></p>
+                                    <p class="scroll-y">SHA256: <code>0a03608988cfd2e50567990dc8be96fb3c501e198e2e6efcb846d89efc7b89f2</code>
+                                </li>
+                            </ul>
+                        </p>
+                    </div>
+		    <div ng-switch-when="ubuntu-cdimage">
+		        Ubuntu CDImage full mirror. Contains ISO files and more stuff about daily images and
+			other Ubuntu derivates.
+		    </div>
+                    <div ng-switch-default="">
+                        No info available for this repository.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
