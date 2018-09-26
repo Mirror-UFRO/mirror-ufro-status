@@ -1,0 +1,19 @@
+body {
+    background: #191b1e;
+}
+
+hr {
+    border-top-color: #444;
+}
+
+.card-header {
+    padding: .75rem 1rem;
+}
+
+.card-header a:hover {
+    text-decoration: none;
+}
+
+.scroll-y {
+    overflow-y: auto;
+}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="app">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mirror UFRO</title>
+    <link rel="stylesheet" href="_site/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="_site/css/style.css" />
+    <script src="_site/js/bootstrap-native-v4.min.js"></script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.2/angular.js"></script>
+    <!--script src="_site/js/angular.min.js"></script-->
+    <script src="_site/app/config.js"></script>
+    <script src="_site/app/app.js"></script>
+    <script src="_site/app/help.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark mb-3">
+        <div class="container">
+            <a href="" class="navbar-brand">Mirror UFRO</a>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a href="https://www.ufro.cl/" class="nav-link" target="_blank">UFRO.cl</a>
+                </li>
+                <li class="nav-item">
+                    <a href="https://dinfo.ufro.cl/" class="nav-link" target="_blank">DINFO</a>
+                </li>
+                <li class="nav-item">
+                    <a href="https://dci.ufro.cl/" class="nav-link" target="_blank">DCI</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="container" ng-controller="MainController">
+        <div ng-if="loading" class="text-center">
+            Loading...
+        </div>
+        
+        <div ng-if="data">
+            <div class="row mb-3">
+                <div class="col text-right text-light">
+                    Disk info: {{ data.disk.usedHuman }} / {{ data.disk.totalHuman }} (free: {{ data.disk.freeHuman }})
+                </div>
+            </div>
+            <div class="row">
+                <div ng-repeat="(name, info) in data.mirrors" class="col-sm-6 col-lg-4 col-xl-3 mb-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <a href="{{ info.link }}" target="_blank">
+                                <img ng-if="info.logo" src="{{ info.logo }}" style="height: 24px" class="mr-2" alt="" />
+                                <span ng-if="info.name">{{ info.name }}</span>
+                                <span ng-if="!info.name">{{ name }}</span>
+                            </a>
+                            <div class="float-right">
+                                <a href="https://mirror.ufro.cl/{{ name }}/">
+                                    <img src="_site/img/folder.svg" alt="Information" style="height: 24px" />
+                                </a>
+                                <a href="#" ng-click="openHelp($event, name)">
+                                    <img src="_site/img/help.svg" alt="Information" style="height: 24px" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col" title="{{ info.statusLine }}">
+                                    {{ info.status }}
+                                </div>
+                                <div class="col text-right" ng-if="info.usageHuman">
+                                    {{ info.usageHuman }}
+                                </div>
+                            </div>
+                            <div class="row" ng-if="info.lastUpdate">
+                                <div class="col text-center" title="{{ info.lastUpdate }}">
+                                    <img src="_site/img/time.svg" alt="Updated:" title="Last update time" style="height: 16px"  />
+                                    {{ relatime(info.lastUpdate) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="row my-3">
+                <div class="col text-center text-light">
+                    Content generated in {{ data._ms.toFixed(4) }} ms<br />
+                    Maintained by  
+                    <a href='&#109;ailto&#58;&#106;o%6Eat&#104;a%6E&#46;gu%&#55;4%6&#57;&#101;rr&#101;z&#64;&#117;%66&#114;on%74era&#46;c&#108;'>Jonathan Gutiérrez</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div ng-controller="HelpController" ng-include="'_site/app/help.html'"></div>
+</body>
+</html>
