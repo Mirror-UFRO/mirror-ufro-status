@@ -101,6 +101,40 @@
                 }
 
                 return number + ' ' + value + ' ago';
+            };
+
+            $scope.relatimeShort = function(dt) {
+                var msPerMinute = 60 * 1000;
+                var msPerHour = msPerMinute * 60;
+                var msPerDay = msPerHour * 24;
+                var msPerMonth = msPerDay * 30;
+                var msPerYear = msPerDay * 365;
+                var elapsed = (new Date()) - (new Date(dt));
+
+                var number = 0;
+                var value = '';
+
+                if (elapsed < msPerMinute) {
+                    number = Math.round(elapsed/1000);
+                    value = 's';
+                } else if (elapsed < msPerHour) {
+                    number = Math.round(elapsed/msPerMinute);
+                    value = 'm';
+                } else if (elapsed < msPerDay) {
+                    number = Math.round(elapsed/msPerHour);
+                    value = 'h';
+                } else if (elapsed < msPerMonth) {
+                    number = Math.round(elapsed/msPerDay);
+                    value = 'd';
+                } else if (elapsed < msPerYear) {
+                    number = Math.round(elapsed/msPerMonth);
+                    value = 'm';
+                } else {
+                    number = Math.round(elapsed/msPerYear);
+                    value = 'y';
+                }
+
+                return number + value;
             }
         };
 

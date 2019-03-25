@@ -17,3 +17,26 @@ hr {
 .scroll-y {
     overflow-y: auto;
 }
+
+.material-icons {
+    vertical-align: text-top;
+}
+
+.card .material-icons {
+    vertical-align: sub;
+}
+
+.card .float-right a,
+.card .float-right a:visited {
+    color: #000;
+}
+
+footer a,
+footer a:visited {
+    color: #FFF;
+}
+
+footer a:hover {
+    color: #FFF;
+    text-decoration: underline;
+}
