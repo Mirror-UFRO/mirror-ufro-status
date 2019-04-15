@@ -39,6 +39,16 @@ var repoconfig = {
         name: 'IUS',
         link: 'https://ius.io/'
     },
+    kali: {
+        logo: '@/kali.svg',
+        name: 'Kali Linux',
+        link: 'https://www.kali.org/'
+    },
+    'kali-images': {
+        logo: '@/kali.svg',
+        name: 'Kali CD images',
+        link: 'https://www.kali.org/'
+    },
     linuxmint: {
         logo: '@/linuxmint.svg',
         name: 'Linux Mint',
