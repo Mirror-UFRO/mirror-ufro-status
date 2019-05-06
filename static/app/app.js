@@ -45,7 +45,7 @@
                         var r = data.mirrors[repo];
                         if (typeof r.status === 'number') {
                             r.status = 'sync (' + (r.status * 100).toFixed(2) + '%' + ')';
-                        } else if (r.status === 'idk') {
+                        } else if (r.status === 'idk' || !r.status) {
                             r.status = 'unknown';
                         } else if (r.status !== 'ready') {
                             r.statusLine = r.status.trim() + '';
