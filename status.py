@@ -83,7 +83,7 @@ def status():
             lines = reverse_readline(logpath)
             try:
                 line = next(lines)
-                if 'Waiting 4h' in line or 'total size is' in line:
+                if 'Waiting 4h' in line or 'total size is' in line or 'Sync finished.' in line:
                     resp[process]['status'] = 'ready'
                     cache.set(status_cache_key, resp[process]['status'], 5)
                     continue
