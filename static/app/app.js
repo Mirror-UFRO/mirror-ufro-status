@@ -1,7 +1,8 @@
 (function(){
     'use strict';
 
-    let app = angular.module('app', []);
+    const md = window.markdownit({ linkify: true });
+    const app = angular.module('app', []);
     app.controller('MainController', MainController);
 
     MainController.$inject = ['$scope', '$http', '$sce'];
@@ -61,7 +62,9 @@
 
                     // Mirror help
                     if (data.mirrors[repo].hasOwnProperty('details')) {
-                        data.mirrors[repo].details = $sce.trustAsHtml(data.mirrors[repo].details);
+                        let html = md.render(data.mirrors[repo].details);
+                        console.log(html);
+                        data.mirrors[repo].details = $sce.trustAsHtml(html);
                     }
                 }
                 return data;
