@@ -4,15 +4,15 @@
     let app = angular.module('app', []);
     app.controller('MainController', MainController);
 
-    MainController.$inject = ['$rootScope', '$scope', '$http'];
-    function MainController($rootScope, $scope, $http) {
+    MainController.$inject = ['$scope', '$http'];
+    function MainController($scope, $http) {
         let helpModalElement = document.getElementById('helpModal');
         let helpModal = new Modal(helpModalElement);
+        $scope.selrepo = null;
 
         $scope.load = function() {
             $scope.loading = true;
             $scope.data = null;
-            $scope.selrepo = null;
 
             // Retrieve repository information
             $http.get('/status').then(function(response) {
@@ -64,89 +64,89 @@
                 $scope.data = data;
                 $scope.loading = false;
             });
+        };
 
-            $scope.relatime = function(dt) {
-                let msPerMinute = 60 * 1000;
-                let msPerHour = msPerMinute * 60;
-                let msPerDay = msPerHour * 24;
-                let msPerMonth = msPerDay * 30;
-                let msPerYear = msPerDay * 365;
-                let elapsed = Date.now() - Date.parse(dt);
+        $scope.relatime = function(dt) {
+            let msPerMinute = 60 * 1000;
+            let msPerHour = msPerMinute * 60;
+            let msPerDay = msPerHour * 24;
+            let msPerMonth = msPerDay * 30;
+            let msPerYear = msPerDay * 365;
+            let elapsed = Date.now() - Date.parse(dt);
 
-                let number = 0;
-                let value = '';
+            let number = 0;
+            let value = '';
 
-                if (elapsed < msPerMinute) {
-                    number = Math.round(elapsed/1000);
-                    value = 'second';
-                } else if (elapsed < msPerHour) {
-                    number = Math.round(elapsed/msPerMinute);
-                    value = 'minute';
-                } else if (elapsed < msPerDay) {
-                    number = Math.round(elapsed/msPerHour);
-                    value = 'hour';
-                } else if (elapsed < msPerMonth) {
-                    number = Math.round(elapsed/msPerDay);
-                    value = 'day';
-                } else if (elapsed < msPerYear) {
-                    number = Math.round(elapsed/msPerMonth);
-                    value = 'month';
-                } else {
-                    number = Math.round(elapsed/msPerYear);
-                    value = 'year';
-                }
+            if (elapsed < msPerMinute) {
+                number = Math.round(elapsed/1000);
+                value = 'second';
+            } else if (elapsed < msPerHour) {
+                number = Math.round(elapsed/msPerMinute);
+                value = 'minute';
+            } else if (elapsed < msPerDay) {
+                number = Math.round(elapsed/msPerHour);
+                value = 'hour';
+            } else if (elapsed < msPerMonth) {
+                number = Math.round(elapsed/msPerDay);
+                value = 'day';
+            } else if (elapsed < msPerYear) {
+                number = Math.round(elapsed/msPerMonth);
+                value = 'month';
+            } else {
+                number = Math.round(elapsed/msPerYear);
+                value = 'year';
+            }
 
-                if (number !== 1) {
-                    value += 's';
-                }
+            if (number !== 1) {
+                value += 's';
+            }
 
-                return number + ' ' + value + ' ago';
-            };
+            return number + ' ' + value + ' ago';
+        };
 
-            $scope.relatimeShort = function(dt) {
-                let msPerMinute = 60 * 1000;
-                let msPerHour = msPerMinute * 60;
-                let msPerDay = msPerHour * 24;
-                let msPerMonth = msPerDay * 30;
-                let msPerYear = msPerDay * 365;
-                let elapsed = (new Date()) - (new Date(dt));
+        $scope.relatimeShort = function(dt) {
+            let msPerMinute = 60 * 1000;
+            let msPerHour = msPerMinute * 60;
+            let msPerDay = msPerHour * 24;
+            let msPerMonth = msPerDay * 30;
+            let msPerYear = msPerDay * 365;
+            let elapsed = (new Date()) - (new Date(dt));
 
-                let number = 0;
-                let value = '';
+            let number = 0;
+            let value = '';
 
-                if (elapsed < msPerMinute) {
-                    number = Math.round(elapsed/1000);
-                    value = 's';
-                } else if (elapsed < msPerHour) {
-                    number = Math.round(elapsed/msPerMinute);
-                    value = 'm';
-                } else if (elapsed < msPerDay) {
-                    number = Math.round(elapsed/msPerHour);
-                    value = 'h';
-                } else if (elapsed < msPerMonth) {
-                    number = Math.round(elapsed/msPerDay);
-                    value = 'd';
-                } else if (elapsed < msPerYear) {
-                    number = Math.round(elapsed/msPerMonth);
-                    value = 'm';
-                } else {
-                    number = Math.round(elapsed/msPerYear);
-                    value = 'y';
-                }
+            if (elapsed < msPerMinute) {
+                number = Math.round(elapsed/1000);
+                value = 's';
+            } else if (elapsed < msPerHour) {
+                number = Math.round(elapsed/msPerMinute);
+                value = 'm';
+            } else if (elapsed < msPerDay) {
+                number = Math.round(elapsed/msPerHour);
+                value = 'h';
+            } else if (elapsed < msPerMonth) {
+                number = Math.round(elapsed/msPerDay);
+                value = 'd';
+            } else if (elapsed < msPerYear) {
+                number = Math.round(elapsed/msPerMonth);
+                value = 'm';
+            } else {
+                number = Math.round(elapsed/msPerYear);
+                value = 'y';
+            }
 
-                return number + value;
-            };
+            return number + value;
+        };
 
-            $scope.openHelp = function(e, repo) {
-                e.preventDefault();
-                if (!repo.details) {
-                    alert('No available help for this repository.');
-                    return;
-                }
+        $scope.openHelp = function(e, repo) {
+            e.preventDefault();
+            if (!repo.details) {
+                alert('No available help for this repository.');
+                return;
+            }
 
-                $scope.selrepo = repo;
-                helpModal.show();
-            };
+            $scope.selrepo = repo;
+            helpModal.show();
         };
 
         $scope.load();
