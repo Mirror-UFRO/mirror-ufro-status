@@ -1,23 +1,29 @@
 (function(){
     'use strict';
 
-    var app = angular.module('app', []);
+    let app = angular.module('app', []);
     app.controller('MainController', MainController);
 
     MainController.$inject = ['$rootScope', '$scope', '$http'];
     function MainController($rootScope, $scope, $http) {
-        $scope.greeting = 'Hello World';
+        let helpModalElement = document.getElementById('helpModal');
+        let helpModal = new Modal(helpModalElement);
 
         $scope.load = function() {
             $scope.loading = true;
             $scope.data = null;
+            $scope.selrepo = null;
 
             // Retrieve repository information
             $http.get('/status').then(function(response) {
-                var data = response.data;
+                let data = response.data;
+                if (!data.hasOwnProperty('mirrors')) {
+                    alert('Mirrors cound not be retrieved!');
+                    return [];
+                }
 
                 // Check settings available for each mirror
-                for (var repo in data.mirrors) {
+                for (let repo in data.mirrors) {
                     if (!data.mirrors.hasOwnProperty(repo)) {
                         continue;
                     }
@@ -26,12 +32,12 @@
                     data.mirrors[repo].link = '#';
 
                     // Copy settings to data object
-                    for (var j in repoconfig[repo]) {
+                    for (let j in repoconfig[repo]) {
                         if (!repoconfig[repo].hasOwnProperty(j)) {
                             continue;
                         }
 
-                        var val = repoconfig[repo][j];
+                        let val = repoconfig[repo][j];
                         if (j === 'logo') {
                             // Replace placeholder for logo URL
                             val = val.replace('@', '/static/img/logos');
@@ -42,7 +48,7 @@
 
                     // In progress
                     if (data.mirrors[repo].hasOwnProperty('status')) {
-                        var r = data.mirrors[repo];
+                        let r = data.mirrors[repo];
                         if (typeof r.status === 'number') {
                             r.status = 'sync (' + (r.status * 100).toFixed(2) + '%' + ')';
                         } else if (r.status === 'idk' || !r.status) {
@@ -59,22 +65,16 @@
                 $scope.loading = false;
             });
 
-            $scope.openHelp = function(e, repo) {
-                e.preventDefault();
-                $rootScope.repo = repo;
-                $rootScope.$broadcast("showHelp");
-            };
-
             $scope.relatime = function(dt) {
-                var msPerMinute = 60 * 1000;
-                var msPerHour = msPerMinute * 60;
-                var msPerDay = msPerHour * 24;
-                var msPerMonth = msPerDay * 30;
-                var msPerYear = msPerDay * 365;
-                var elapsed = (new Date()) - (new Date(dt));
+                let msPerMinute = 60 * 1000;
+                let msPerHour = msPerMinute * 60;
+                let msPerDay = msPerHour * 24;
+                let msPerMonth = msPerDay * 30;
+                let msPerYear = msPerDay * 365;
+                let elapsed = Date.now() - Date.parse(dt);
 
-                var number = 0;
-                var value = '';
+                let number = 0;
+                let value = '';
 
                 if (elapsed < msPerMinute) {
                     number = Math.round(elapsed/1000);
@@ -104,15 +104,15 @@
             };
 
             $scope.relatimeShort = function(dt) {
-                var msPerMinute = 60 * 1000;
-                var msPerHour = msPerMinute * 60;
-                var msPerDay = msPerHour * 24;
-                var msPerMonth = msPerDay * 30;
-                var msPerYear = msPerDay * 365;
-                var elapsed = (new Date()) - (new Date(dt));
+                let msPerMinute = 60 * 1000;
+                let msPerHour = msPerMinute * 60;
+                let msPerDay = msPerHour * 24;
+                let msPerMonth = msPerDay * 30;
+                let msPerYear = msPerDay * 365;
+                let elapsed = (new Date()) - (new Date(dt));
 
-                var number = 0;
-                var value = '';
+                let number = 0;
+                let value = '';
 
                 if (elapsed < msPerMinute) {
                     number = Math.round(elapsed/1000);
@@ -135,7 +135,18 @@
                 }
 
                 return number + value;
-            }
+            };
+
+            $scope.openHelp = function(e, repo) {
+                e.preventDefault();
+                if (!repo.details) {
+                    alert('No available help for this repository.');
+                    return;
+                }
+
+                $scope.selrepo = repo;
+                helpModal.show();
+            };
         };
 
         $scope.load();
