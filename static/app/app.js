@@ -4,8 +4,8 @@
     let app = angular.module('app', []);
     app.controller('MainController', MainController);
 
-    MainController.$inject = ['$scope', '$http'];
-    function MainController($scope, $http) {
+    MainController.$inject = ['$scope', '$http', '$sce'];
+    function MainController($scope, $http, $sce) {
         let helpModalElement = document.getElementById('helpModal');
         let helpModal = new Modal(helpModalElement);
         $scope.selrepo = null;
@@ -57,6 +57,11 @@
                             r.statusLine = r.status.trim() + '';
                             r.status = 'in progress';
                         }
+                    }
+
+                    // Mirror help
+                    if (data.mirrors[repo].hasOwnProperty('details')) {
+                        data.mirrors[repo].details = $sce.trustAsHtml(data.mirrors[repo].details);
                     }
                 }
                 return data;
