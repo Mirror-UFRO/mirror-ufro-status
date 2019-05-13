@@ -29,6 +29,12 @@
                         continue;
                     }
 
+                    // Hide repos that aren't on the config
+                    if (!repoconfig.hasOwnProperty(repo)) {
+                        delete data.mirrors[repo];
+                        continue;
+                    }
+
                     // Default data
                     data.mirrors[repo].link = '#';
 
