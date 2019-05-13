@@ -16,120 +16,111 @@
   <script src="/static/app/app.js"></script>
 </head>
 <body>
-<nav class="navbar navbar-dark navbar-expand bg-dark mb-3">
-  <div class="container">
-    <a href="" class="navbar-brand">UFRO Mirror</a>
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a href="https://github.com/makzk/mirror-ufro-status/" class="nav-link" target="_blank">Source</a>
-      </li>
-      <li class="nav-item">
-        <a href="https://www.ufro.cl/" class="nav-link" target="_blank">UFRO.cl</a>
-      </li>
-      <li class="nav-item">
-        <a href="https://dinfo.ufro.cl/" class="nav-link" target="_blank">DINFO</a>
-      </li>
-    </ul>
-  </div>
-</nav>
 
-<div class="container" ng-controller="MainController">
-  <div ng-if="data">
-    <div class="row mb-3">
-      <div class="col-sm-12 col-lg-6 text-center text-lg-left text-light">
-        <i class="material-icons">folder_open</i> Explore repository files
-        <i class="material-icons">help_outline</i>
-        Repo<span class="d-none d-sm-inline">sitory</span>
-        information
-      </div>
-      <div class="col-sm-12 col-lg-6 text-center text-lg-right text-light">
+<div ng-controller="MainController">
+  <nav class="navbar navbar-dark navbar-expand bg-dark mb-3">
+    <div class="container">
+      <a href="" class="navbar-brand">UFRO Mirror</a>
+      <span class="navbar-text" ng-if="data">
         <i class="material-icons" title="Disk usage">data_usage</i>
-        Disk info: {{ data.disk.usedHuman }} / {{ data.disk.totalHuman }} (free: {{ data.disk.freeHuman }})
-      </div>
+        Usage: {{ data.disk.usedHuman }} / {{ data.disk.totalHuman }} (free: {{ data.disk.freeHuman }})
+      </span>
     </div>
-    <div class="row">
-      <div ng-repeat="(name, mirror) in data.mirrors" class="col-sm-6 col-lg-4 col-xl-3 mb-3">
-        <div class="card">
-          <div class="card-header">
-            <a href="{{ mirror.link }}" target="_blank">
-              <img ng-if="mirror.logo" ng-src="{{ mirror.logo }}" style="height: 24px" class="mr-2" alt=""/>
-              <span ng-if="mirror.name">{{ mirror.name }}</span>
-              <span ng-if="!mirror.name">{{ name }}</span>
-            </a>
-            <div class="float-right">
-              <a href="https://mirror.ufro.cl/{{ name }}/" title="Explore repository files" target="_blank">
-                <i class="material-icons">folder_open</i>
-              </a>
-              <a href="#" ng-if="mirror.details" ng-click="openHelp($event, mirror)" title="Repository information">
-                <i class="material-icons">help_outline</i>
-              </a>
-            </div>
-          </div>
-          <div class="card-body text-center">
-            <div class="d-flex">
-              <div class="text-left">
-                <i class="material-icons" style="font-size: 18px" title="Last update time">schedule</i>
-                Updated:
-              </div>
-              <div class="text-right ml-auto">{{ relatimeShort(mirror.lastUpdate) }} ago</div>
-            </div>
+  </nav>
 
-            <div class="d-flex" ng-if="mirror.usageHuman">
-              <div class="text-left">
-                <i class="material-icons" style="font-size: 18px" title="Disk usage">data_usage</i>
-                Usage:
-              </div>
-              <div class="text-right ml-auto">{{ mirror.usageHuman }}</div>
-            </div>
+  <div class="container">
+    <div ng-if="data">
+      <div class="row">
+        <div ng-repeat="(name, mirror) in data.mirrors" class="col-sm-6 col-lg-4 col-xl-3 mb-3">
+          <div class="card">
+            <div class="card-header">
+              <a href="{{ mirror.link }}" target="_blank" data-toggle="tooltip" title="{{ 'Go to ' + mirror.name + ' website' }}">
+                <img ng-if="mirror.logo" ng-src="{{ mirror.logo }}" style="height: 24px" class="mr-2" alt=""/>
+                <span>{{ mirror.name }}</span>
+              </a>
+              <span data-toggle="tooltip" title="Official mirror" ng-if="mirror.official">
+                <i class="material-icons">verified_user</i>
+              </span>
 
-            <div class="d-flex">
-              <div class="text-left">
-                <i class="material-icons" style="font-size: 18px" title="Status">explore</i>
-                Status:
+              <div class="float-right mirror-header-icons">
+                <a href="https://mirror.ufro.cl/{{ name }}/" data-toggle="tooltip" title="Explore repository files" target="_blank">
+                  <i class="material-icons">folder_open</i>
+                </a>
+                <a href="#" ng-if="mirror.details" ng-click="openHelp($event, mirror)" data-toggle="tooltip" title="Show repository information">
+                  <i class="material-icons">help_outline</i>
+                </a>
               </div>
-              <div class="text-right ml-auto">{{ mirror.status }}</div>
+            </div>
+            <div class="card-body text-center">
+              <div class="d-flex">
+                <div class="text-left">
+                  <i class="material-icons" style="font-size: 18px" title="Last update time">schedule</i>
+                  Updated:
+                </div>
+                <div class="text-right ml-auto">{{ relatimeShort(mirror.lastUpdate) }} ago</div>
+              </div>
+
+              <div class="d-flex" ng-if="mirror.usageHuman">
+                <div class="text-left">
+                  <i class="material-icons" style="font-size: 18px" title="Disk usage">data_usage</i>
+                  Usage:
+                </div>
+                <div class="text-right ml-auto">{{ mirror.usageHuman }}</div>
+              </div>
+
+              <div class="d-flex">
+                <div class="text-left">
+                  <i class="material-icons" style="font-size: 18px" title="Status">explore</i>
+                  Status:
+                </div>
+                <div class="text-right ml-auto">{{ mirror.status }}</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div ng-if="loading" class="text-center text-light">Loading...</div>
+    <div ng-if="loading" class="text-center text-light">Loading...</div>
 
-  <hr>
-  <footer class="row my-3">
-    <div class="col text-center text-light">
-      <div>
-        <a href="https://www.ufro.cl/" target="_blank">Universidad de La Frontera</a> &copy; 2019.
-        Maintained by
-        <a href='&#109;ailto&#58;&#106;o%6Eat&#104;a%6E&#46;gu%&#55;4%6&#57;&#101;rr&#101;z&#64;&#117;%66&#114;on%74era&#46;c&#108;'>
-          Jonathan Gutiérrez</a>.
+    <hr>
+    <footer class="row my-3">
+      <div class="col text-center text-light">
+        <div>
+          <a href="https://www.ufro.cl/" target="_blank">Universidad de La Frontera</a> &copy; 2019.
+          Maintained by
+          <a href='&#109;ailto&#58;&#106;o%6Eat&#104;a%6E&#46;gu%&#55;4%6&#57;&#101;rr&#101;z&#64;&#117;%66&#114;on%74era&#46;c&#108;'>
+            Jonathan Gutiérrez</a>.
+        </div>
+        <div>
+          Host, bandwidth and disk provided by <a href="https://dinfo.ufro.cl/" target="_blank">DINFO</a>
+          and <a href="http://dci.ufro.cl/" target="_blank">DCI</a>.
+        </div>
+        <div>
+          <span ng-if="data">Content generated in {{ data._ms.toFixed(4) }} ms -</span>
+          <a href="https://github.com/makzk/mirror-ufro-status/">Source</a>
+        </div>
       </div>
-      <div>
-        Host, bandwidth and disk provided by <a href="https://dinfo.ufro.cl/" target="_blank">DINFO</a>
-        and <a href="http://dci.ufro.cl/" target="_blank">DCI</a>.
-      </div>
-      <div ng-if="data">Content generated in {{ data._ms.toFixed(4) }} ms</div>
+    </footer>
+
+    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="helpModalTitle">Information about "{{ selrepo.name }}"</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" ng-bind-html="selrepo.details"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </footer>
-
-  <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
-      <div class="modal-dialog modal-lg" role="document">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="helpModalTitle">Information about "{{ selrepo.name }}"</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-              <div class="modal-body" ng-bind-html="selrepo.details"></div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
-          </div>
-      </div>
   </div>
+
 </div>
 
 </body>

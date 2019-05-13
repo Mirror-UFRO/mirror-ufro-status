@@ -5,8 +5,8 @@
     const app = angular.module('app', []);
     app.controller('MainController', MainController);
 
-    MainController.$inject = ['$scope', '$http', '$sce'];
-    function MainController($scope, $http, $sce) {
+    MainController.$inject = ['$scope', '$http', '$sce', '$timeout'];
+    function MainController($scope, $http, $sce, $timeout) {
         let helpModalElement = document.getElementById('helpModal');
         let helpModal = new Modal(helpModalElement);
         $scope.selrepo = null;
@@ -60,10 +60,14 @@
                         }
                     }
 
+                    // Add "repo" as property name if it hasn't been set
+                    if (!data.mirrors[repo].hasOwnProperty('name')) {
+                        data.mirrors[repo].name = repo;
+                    }
+
                     // Mirror help
                     if (data.mirrors[repo].hasOwnProperty('details')) {
                         let html = md.render(data.mirrors[repo].details);
-                        console.log(html);
                         data.mirrors[repo].details = $sce.trustAsHtml(html);
                     }
                 }
@@ -156,6 +160,16 @@
             $scope.selrepo = repo;
             helpModal.show();
         };
+
+        $scope.$watch('data', function() {
+            $timeout(function() {
+                var els = document.querySelectorAll('[data-toggle="tooltip"]');
+                Array.prototype.forEach.call(els, function(el) {
+                    new Tooltip(el);
+                })
+
+            });
+        });
 
         $scope.load();
     }

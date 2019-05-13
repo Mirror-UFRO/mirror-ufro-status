@@ -14,6 +14,14 @@ hr {
     text-decoration: none;
 }
 
+.card-header > span i {
+    font-size: 14px;
+    vertical-align: inherit;
+    position: relative;
+    top: -2px;
+    color: var(--blue);
+}
+
 .scroll-y {
     overflow-y: auto;
 }
