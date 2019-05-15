@@ -11,17 +11,16 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.4.2/markdown-it.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.26/bootstrap-native-v4.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.8/angular.min.js"></script>
-  <script src="/static/app/config.js"></script>
-  <script src="/static/app/app.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 </head>
 <body>
 
-<div ng-controller="MainController">
+<div id="app">
   <nav class="navbar navbar-dark navbar-expand bg-dark mb-3">
     <div class="container">
       <a href="" class="navbar-brand">UFRO Mirror</a>
-      <span class="navbar-text" ng-if="data">
+      <span class="navbar-text" v-if="data">
         <i class="material-icons" title="Disk usage">data_usage</i>
         Usage: {{ data.disk.usedHuman }} / {{ data.disk.totalHuman }} (free: {{ data.disk.freeHuman }})
       </span>
@@ -29,24 +28,24 @@
   </nav>
 
   <div class="container">
-    <div ng-if="data">
+    <div v-if="data">
       <div class="row">
-        <div ng-repeat="(name, mirror) in data.mirrors" class="col-sm-6 col-lg-4 col-xl-3 mb-3">
+        <div v-for="mirror in data.mirrors" class="col-sm-6 col-lg-4 col-xl-3 mb-3">
           <div class="card">
             <div class="card-header">
-              <a href="{{ mirror.link }}" target="_blank" data-toggle="tooltip" title="{{ 'Go to ' + mirror.name + ' website' }}">
-                <img ng-if="mirror.logo" ng-src="{{ mirror.logo }}" style="height: 24px" class="mr-2" alt=""/>
+              <a :href="mirror.link" target="_blank" data-toggle="tooltip" :title="'Go to ' + mirror.name + ' website'">
+                <img v-if="mirror.logo" :src="mirror.logo" style="height: 24px" class="mr-2" alt=""/>
                 <span>{{ mirror.name }}</span>
               </a>
-              <span data-toggle="tooltip" title="Official mirror" ng-if="mirror.official">
+              <span data-toggle="tooltip" title="Official mirror" v-if="mirror.official">
                 <i class="material-icons">verified_user</i>
               </span>
 
               <div class="float-right mirror-header-icons">
-                <a href="https://mirror.ufro.cl/{{ name }}/" data-toggle="tooltip" title="Explore repository files" target="_blank">
+                <a :href="'https://mirror.ufro.cl/' + name + '/'" data-toggle="tooltip" title="Explore repository files" target="_blank">
                   <i class="material-icons">folder_open</i>
                 </a>
-                <a href="#" ng-if="mirror.details" ng-click="openHelp($event, mirror)" data-toggle="tooltip" title="Show repository information">
+                <a href="#" v-if="mirror.details" :click.prevent="openHelp(mirror)" data-toggle="tooltip" title="Show repository information">
                   <i class="material-icons">help_outline</i>
                 </a>
               </div>
@@ -60,7 +59,7 @@
                 <div class="text-right ml-auto">{{ relatimeShort(mirror.lastUpdate) }} ago</div>
               </div>
 
-              <div class="d-flex" ng-if="mirror.usageHuman">
+              <div class="d-flex" v-if="mirror.usageHuman">
                 <div class="text-left">
                   <i class="material-icons" style="font-size: 18px" title="Disk usage">data_usage</i>
                   Usage:
@@ -81,7 +80,7 @@
       </div>
     </div>
 
-    <div ng-if="loading" class="text-center text-light">Loading...</div>
+    <div v-if="loading" class="text-center text-light">Loading...</div>
 
     <hr>
     <footer class="row my-3">
@@ -97,7 +96,7 @@
           and <a href="http://dci.ufro.cl/" target="_blank">DCI</a>.
         </div>
         <div>
-          <span ng-if="data">Content generated in {{ data._ms.toFixed(4) }} ms -</span>
+          <span v-if="data">Content generated in {{ data._ms.toFixed(4) }} ms -</span>
           <a href="https://github.com/makzk/mirror-ufro-status/">Source</a>
         </div>
       </div>
@@ -105,14 +104,14 @@
 
     <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
+            <div class="modal-content" v-if="selrepo">
                 <div class="modal-header">
                     <h5 class="modal-title" id="helpModalTitle">Information about "{{ selrepo.name }}"</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body" ng-bind-html="selrepo.details"></div>
+                <div class="modal-body" v-html="selrepo.details"></div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
@@ -123,5 +122,7 @@
 
 </div>
 
+<script src="/static/app/config.js"></script>
+<script src="/static/app/app2.js"></script>
 </body>
 </html>

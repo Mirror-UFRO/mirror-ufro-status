@@ -1,7 +1,7 @@
 (function(){
     'use strict';
 
-    const md = window.markdownit({ linkify: true });
+    const md = markdownit({ linkify: true });
     const app = angular.module('app', []);
     app.controller('MainController', MainController);
 
