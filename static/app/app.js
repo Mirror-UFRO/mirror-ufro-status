@@ -1,4 +1,4 @@
-(function(){
+(function(d, w){
     'use strict';
 
     const md = markdownit({ linkify: true });
@@ -37,18 +37,9 @@
                 }
 
                 app.data = data;
-
-                // Enable tooltips
-                /*Vue.nextTick(function () {
-                    let els = document.querySelectorAll('[data-toggle="tooltip"]');
-                    Array.prototype.forEach.call(els, function(el) {
-                        new Tooltip(el);
-                    });
-                });*/
             });
             
-            // let helpModalElement = document.getElementById('helpModal');
-            // this.helpModal = new Modal(helpModalElement);
+            this.helpModal = d.querySelector('.modal');
         },
         methods: {
             relatimeShort: function(dt) {
@@ -91,10 +82,14 @@
                 }
 
                 app.selrepo = repo;
-                app.helpModal.show();
+                app.toggleModal();
             },
             mdRender: function(content) {
                 return md.render(content);
+            },
+            toggleModal: function() {
+                let cl = d.querySelector('body').classList;
+                cl.toggle('has-modal');
             }
         }
     });
@@ -150,4 +145,4 @@
         };
         xhr.send();
     }
-})();
+})(document, window);
