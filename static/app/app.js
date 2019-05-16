@@ -2,22 +2,23 @@
     'use strict';
 
     const md = markdownit({ linkify: true });
-    const app = angular.module('app', []);
-    app.controller('MainController', MainController);
 
-    MainController.$inject = ['$scope', '$http', '$sce', '$timeout'];
-    function MainController($scope, $http, $sce, $timeout) {
-        let helpModalElement = document.getElementById('helpModal');
-        let helpModal = new Modal(helpModalElement);
-        $scope.selrepo = null;
+    let app = new Vue({
+        el: "#app",
+        data: {
+            selrepo: { name: '', details: '' },
+            loading: true,
+            data: null,
+            helpModal: null
+        },
+        mounted() {
+            getStatus(function(err, data) {
+                app.loading = false;
+                if (err) {
+                    console.error(err);
+                    return;
+                }
 
-        $scope.load = function() {
-            $scope.loading = true;
-            $scope.data = null;
-
-            // Retrieve repository information
-            $http.get('/status').then(function(response) {
-                let data = response.data;
                 if (!data.hasOwnProperty('mirrors')) {
                     alert('Mirrors cound not be retrieved!');
                     return [];
@@ -25,158 +26,130 @@
 
                 // Check settings available for each mirror
                 for (let repo in data.mirrors) {
-                    if (!data.mirrors.hasOwnProperty(repo)) {
-                        continue;
-                    }
-
                     // Hide repos that aren't on the config
                     if (!repoconfig.hasOwnProperty(repo)) {
                         delete data.mirrors[repo];
                         continue;
                     }
 
-                    // Default data
-                    data.mirrors[repo].link = '#';
-
-                    // Copy settings to data object
-                    for (let j in repoconfig[repo]) {
-                        if (!repoconfig[repo].hasOwnProperty(j)) {
-                            continue;
-                        }
-
-                        let val = repoconfig[repo][j];
-                        if (j === 'logo') {
-                            // Replace placeholder for logo URL
-                            val = val.replace('@', '/static/img/logos');
-                        }
-
-                        data.mirrors[repo][j] = val;
-                    }
-
-                    // In progress
-                    if (data.mirrors[repo].hasOwnProperty('status')) {
-                        let r = data.mirrors[repo];
-                        if (typeof r.status === 'number') {
-                            r.status = 'sync (' + (r.status * 100).toFixed(2) + '%' + ')';
-                        } else if (r.status === 'idk' || !r.status) {
-                            r.status = 'unknown';
-                        } else if (r.status !== 'ready') {
-                            r.statusLine = r.status.trim() + '';
-                            r.status = 'in progress';
-                        }
-                    }
-
-                    // Add "repo" as property name if it hasn't been set
-                    if (!data.mirrors[repo].hasOwnProperty('name')) {
-                        data.mirrors[repo].name = repo;
-                    }
-
-                    // Mirror help
-                    if (data.mirrors[repo].hasOwnProperty('details')) {
-                        let html = md.render(data.mirrors[repo].details);
-                        data.mirrors[repo].details = $sce.trustAsHtml(html);
-                    }
+                    // Parse and filter mirror data
+                    parseMirror(data.mirrors[repo], repo);
                 }
-                return data;
-            }).then(function(data) {
-                $scope.data = data;
-                $scope.loading = false;
+
+                app.data = data;
+
+                // Enable tooltips
+                /*Vue.nextTick(function () {
+                    let els = document.querySelectorAll('[data-toggle="tooltip"]');
+                    Array.prototype.forEach.call(els, function(el) {
+                        new Tooltip(el);
+                    });
+                });*/
             });
-        };
+            
+            // let helpModalElement = document.getElementById('helpModal');
+            // this.helpModal = new Modal(helpModalElement);
+        },
+        methods: {
+            relatimeShort: function(dt) {
+                let msPerMinute = 60 * 1000;
+                let msPerHour = msPerMinute * 60;
+                let msPerDay = msPerHour * 24;
+                let msPerMonth = msPerDay * 30;
+                let msPerYear = msPerDay * 365;
+                let elapsed = (new Date()) - (new Date(dt));
 
-        $scope.relatime = function(dt) {
-            let msPerMinute = 60 * 1000;
-            let msPerHour = msPerMinute * 60;
-            let msPerDay = msPerHour * 24;
-            let msPerMonth = msPerDay * 30;
-            let msPerYear = msPerDay * 365;
-            let elapsed = Date.now() - Date.parse(dt);
+                let number = 0;
+                let value = '';
 
-            let number = 0;
-            let value = '';
+                if (elapsed < msPerMinute) {
+                    number = Math.round(elapsed/1000);
+                    value = 's';
+                } else if (elapsed < msPerHour) {
+                    number = Math.round(elapsed/msPerMinute);
+                    value = 'm';
+                } else if (elapsed < msPerDay) {
+                    number = Math.round(elapsed/msPerHour);
+                    value = 'h';
+                } else if (elapsed < msPerMonth) {
+                    number = Math.round(elapsed/msPerDay);
+                    value = 'd';
+                } else if (elapsed < msPerYear) {
+                    number = Math.round(elapsed/msPerMonth);
+                    value = 'm';
+                } else {
+                    number = Math.round(elapsed/msPerYear);
+                    value = 'y';
+                }
 
-            if (elapsed < msPerMinute) {
-                number = Math.round(elapsed/1000);
-                value = 'second';
-            } else if (elapsed < msPerHour) {
-                number = Math.round(elapsed/msPerMinute);
-                value = 'minute';
-            } else if (elapsed < msPerDay) {
-                number = Math.round(elapsed/msPerHour);
-                value = 'hour';
-            } else if (elapsed < msPerMonth) {
-                number = Math.round(elapsed/msPerDay);
-                value = 'day';
-            } else if (elapsed < msPerYear) {
-                number = Math.round(elapsed/msPerMonth);
-                value = 'month';
+                return number + value;
+            },
+            openHelp: function(repo) {
+                if (!repo.details) {
+                    alert('No available help for this repository.');
+                    return;
+                }
+
+                app.selrepo = repo;
+                app.helpModal.show();
+            }
+        }
+    });
+
+    function parseMirror(mirror, name) {
+        // Default data
+        mirror.link = '#';
+        mirror.folderLink = `https://mirror.ufro.cl/${mirror.name}/`;
+
+        // Copy settings to data object
+        for (let j in repoconfig[name]) {
+            if (!repoconfig[name].hasOwnProperty(j)) {
+                continue;
+            }
+
+            let val = repoconfig[name][j];
+            if (j === 'logo') {
+                // Replace placeholder for logo URL
+                val = val.replace('@', '/static/img/logos');
+            }
+
+            mirror[j] = val;
+        }
+
+        // In progress
+        if (mirror.hasOwnProperty('status')) {
+            let r = mirror;
+            if (typeof r.status === 'number') {
+                r.status = 'sync (' + (r.status * 100).toFixed(2) + '%' + ')';
+            } else if (r.status === 'idk' || !r.status) {
+                r.status = 'unknown';
+            } else if (r.status !== 'ready') {
+                r.statusLine = r.status.trim() + '';
+                r.status = 'in progress';
+            }
+        }
+
+        // Add "repo" as property name if it hasn't been set
+        if (!mirror.hasOwnProperty('name')) {
+            mirror.name = repo;
+        }
+
+        // Mirror help
+        if (mirror.hasOwnProperty('details')) {
+            mirror.details = md.render(mirror.details);
+        }
+    }
+
+    function getStatus(callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'https://mirror.ufro.cl/status');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                callback(null, JSON.parse(xhr.responseText));
             } else {
-                number = Math.round(elapsed/msPerYear);
-                value = 'year';
+                callback(new Error(xhr.status));
             }
-
-            if (number !== 1) {
-                value += 's';
-            }
-
-            return number + ' ' + value + ' ago';
         };
-
-        $scope.relatimeShort = function(dt) {
-            let msPerMinute = 60 * 1000;
-            let msPerHour = msPerMinute * 60;
-            let msPerDay = msPerHour * 24;
-            let msPerMonth = msPerDay * 30;
-            let msPerYear = msPerDay * 365;
-            let elapsed = (new Date()) - (new Date(dt));
-
-            let number = 0;
-            let value = '';
-
-            if (elapsed < msPerMinute) {
-                number = Math.round(elapsed/1000);
-                value = 's';
-            } else if (elapsed < msPerHour) {
-                number = Math.round(elapsed/msPerMinute);
-                value = 'm';
-            } else if (elapsed < msPerDay) {
-                number = Math.round(elapsed/msPerHour);
-                value = 'h';
-            } else if (elapsed < msPerMonth) {
-                number = Math.round(elapsed/msPerDay);
-                value = 'd';
-            } else if (elapsed < msPerYear) {
-                number = Math.round(elapsed/msPerMonth);
-                value = 'm';
-            } else {
-                number = Math.round(elapsed/msPerYear);
-                value = 'y';
-            }
-
-            return number + value;
-        };
-
-        $scope.openHelp = function(e, repo) {
-            e.preventDefault();
-            if (!repo.details) {
-                alert('No available help for this repository.');
-                return;
-            }
-
-            $scope.selrepo = repo;
-            helpModal.show();
-        };
-
-        $scope.$watch('data', function() {
-            $timeout(function() {
-                var els = document.querySelectorAll('[data-toggle="tooltip"]');
-                Array.prototype.forEach.call(els, function(el) {
-                    new Tooltip(el);
-                })
-
-            });
-        });
-
-        $scope.load();
+        xhr.send();
     }
 })();

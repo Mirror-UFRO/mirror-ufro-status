@@ -7,123 +7,115 @@
   <title>Mirror UFRO - Chile</title>
   <meta name="description" content="Mirror server for GNU/Linux distributions and other software, from University of La frontera, Temuco, Chile." />
   <link rel="canonical" href="https://mirror.ufro.cl/" />
-
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="/static/css/style.css"/>
 </head>
 <body>
 
 <div id="app">
-  <nav class="navbar navbar-dark navbar-expand bg-dark mb-3">
+  <nav>
     <div class="container">
       <a href="" class="navbar-brand">Mirror UFRO</a>
-      <span class="navbar-text" v-if="data">
+      <span v-if="data">
         <img src="/static/img/usage.svg" alt="usage">
         Usage: {{ data.disk.usedHuman }} / {{ data.disk.totalHuman }} (free: {{ data.disk.freeHuman }})
       </span>
     </div>
   </nav>
 
-  <div class="container">
-    <div v-if="data">
-      <div class="row">
-        <div v-for="mirror in data.mirrors" class="col-sm-6 col-lg-4 col-xl-3 mb-3">
-          <div class="card">
-            <div class="card-header">
-              <a :href="mirror.link" target="_blank" data-toggle="tooltip" :title="'Go to ' + mirror.name + ' website'">
-                <img v-if="mirror.logo" :src="mirror.logo" style="height: 24px" class="mr-2" alt=""/>
-                <span>{{ mirror.name }}</span>
-              </a>
-              <span data-toggle="tooltip" title="Official mirror" v-if="mirror.official">
-                <img src="/static/img/official.svg" alt="official">
-              </span>
+  <div class="container mirrors">
+    <div v-if="data" v-for="mirror in data.mirrors" class="mirror-card">
+      <div class="mirror-header d-flex">
+        <div class="mirror-title">
+          <a :href="mirror.link" target="_blank" data-toggle="tooltip" :title="'Go to ' + mirror.name + ' website'">
+            <img v-if="mirror.logo" :src="mirror.logo" alt=""/>
+            <span>{{ mirror.name }}</span>
+          </a>
+          <span data-toggle="tooltip" title="Official mirror" v-if="mirror.official">
+            <img src="/static/img/official.svg" alt="official">
+          </span>
+        </div>
 
-              <div class="float-right mirror-header-icons">
-                <a :href="mirror.folderLink" data-toggle="tooltip" title="Explore repository files" target="_blank">
-                  <img src="/static/img/folder.svg" alt="folder">
-                </a>
-                <a href="#" v-if="mirror.details" @click.prevent="openHelp(mirror)" data-toggle="tooltip" title="Show repository information">
-                  <img src="/static/img/help.svg" alt="help">
-                </a>
-              </div>
-            </div>
-            <div class="card-body text-center">
-              <div class="d-flex">
-                <div class="text-left">
-                  <img src="/static/img/updated.svg" alt="updated" title="Last update time">
-                  Updated:
-                </div>
-                <div class="text-right ml-auto">{{ relatimeShort(mirror.lastUpdate) }} ago</div>
-              </div>
+        <div class="float-right mirror-header-icons">
+          <a :href="mirror.folderLink" data-toggle="tooltip" title="Explore repository files" target="_blank">
+            <img src="/static/img/folder.svg" alt="folder">
+          </a>
+          <a href="#" v-if="mirror.details" @click.prevent="openHelp(mirror)" data-toggle="tooltip" title="Show repository information">
+            <img src="/static/img/help.svg" alt="help">
+          </a>
+        </div>
+      </div><!-- /.card-header -->
 
-              <div class="d-flex" v-if="mirror.usageHuman">
-                <div class="text-left">
-                  <img src="/static/img/usage_b.svg" alt="updated" title="Disk usage">
-                  Usage:
-                </div>
-                <div class="text-right ml-auto">{{ mirror.usageHuman }}</div>
-              </div>
-
-              <div class="d-flex">
-                <div class="text-left">
-                  <img src="/static/img/status.svg" alt="updated" title="Status">
-                  Status:
-                </div>
-                <div class="text-right ml-auto">{{ mirror.status }}</div>
-              </div>
-            </div>
+      <div class="mirror-body">
+        <div class="d-flex">
+          <div>
+            <img src="/static/img/updated.svg" alt="updated" title="Last update time">
+            Updated:
           </div>
+          <div class="text-right ml-auto">{{ relatimeShort(mirror.lastUpdate) }} ago</div>
+        </div>
+
+        <div class="d-flex" v-if="mirror.usageHuman">
+          <div>
+            <img src="/static/img/usage_b.svg" alt="updated" title="Disk usage">
+            Usage:
+          </div>
+          <div class="text-right ml-auto">{{ mirror.usageHuman }}</div>
+        </div>
+
+        <div class="d-flex">
+          <div>
+            <img src="/static/img/status.svg" alt="updated" title="Status">
+            Status:
+          </div>
+          <div class="text-right ml-auto">{{ mirror.status }}</div>
         </div>
       </div>
     </div>
+    <!-- /if:data for:data.mirrors -->
 
     <div v-if="loading" class="text-center text-light">Loading...</div>
+  </div>
 
+  <footer class="container">
     <hr>
-    <footer class="row my-3">
-      <div class="col text-center text-light">
-        <div>
-          <a href="https://www.ufro.cl/" target="_blank">Universidad de La Frontera</a> &copy; 2019.
-          Maintained by
-          <a href='&#109;ailto&#58;&#106;o%6Eat&#104;a%6E&#46;gu%&#55;4%6&#57;&#101;rr&#101;z&#64;&#117;%66&#114;on%74era&#46;c&#108;'>
-            Jonathan Gutiérrez</a>.
-        </div>
-        <div>
-          Host, bandwidth and disk provided by <a href="https://dinfo.ufro.cl/" target="_blank">DINFO</a>
-          and <a href="http://dci.ufro.cl/" target="_blank">DCI</a>.
-        </div>
-        <div>
-          <span v-if="data">Content generated in {{ data._ms.toFixed(4) }} ms -</span>
-          <a href="https://github.com/makzk/mirror-ufro-status/">Source</a>
-        </div>
-      </div>
-    </footer>
-
-    <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="helpModalTitle">Information about "{{ selrepo.name }}"</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" v-html="selrepo.details"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-        </div>
+    <div>
+      <a href="https://www.ufro.cl/" target="_blank">Universidad de La Frontera</a> &copy; 2019.
+      Maintained by
+      <a href='&#109;ailto&#58;&#106;o%6Eat&#104;a%6E&#46;gu%&#55;4%6&#57;&#101;rr&#101;z&#64;&#117;%66&#114;on%74era&#46;c&#108;'>
+        Jonathan Gutiérrez</a>.
     </div>
+    <div>
+      Host, bandwidth and disk provided by <a href="https://dinfo.ufro.cl/" target="_blank">DINFO</a>
+      and <a href="http://dci.ufro.cl/" target="_blank">DCI</a>.
+    </div>
+    <div>
+      <span v-if="data">Content generated in {{ data._ms.toFixed(4) }} ms -</span>
+      <a href="https://github.com/makzk/mirror-ufro-status/">Source</a>
+    </div>
+  </footer>
+
+  <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="helpModalTitle">Information about "{{ selrepo.name }}"</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body" v-html="selrepo.details"></div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+          </div>
+      </div>
   </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown-it/8.4.2/markdown-it.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap.native/2.0.26/bootstrap-native-v4.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
 <script src="/static/app/config.js"></script>
-<script src="/static/app/app2.js"></script>
+<script src="/static/app/app.js"></script>
 
 </body>
 </html>
