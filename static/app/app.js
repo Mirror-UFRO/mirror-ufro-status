@@ -92,6 +92,9 @@
 
                 app.selrepo = repo;
                 app.helpModal.show();
+            },
+            mdRender: function(content) {
+                return md.render(content);
             }
         }
     });
@@ -99,7 +102,7 @@
     function parseMirror(mirror, name) {
         // Default data
         mirror.link = '#';
-        mirror.folderLink = `https://mirror.ufro.cl/${mirror.name}/`;
+        mirror.folderLink = `https://mirror.ufro.cl/${name}/`;
 
         // Copy settings to data object
         for (let j in repoconfig[name]) {
@@ -132,11 +135,6 @@
         // Add "repo" as property name if it hasn't been set
         if (!mirror.hasOwnProperty('name')) {
             mirror.name = repo;
-        }
-
-        // Mirror help
-        if (mirror.hasOwnProperty('details')) {
-            mirror.details = md.render(mirror.details);
         }
     }
 

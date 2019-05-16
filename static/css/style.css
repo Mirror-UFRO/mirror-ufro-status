@@ -1,15 +1,14 @@
 :root {
-    --font-family-sans-serif: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
     --font-family-monospace: SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;
 }
 html, body {
     background: #191b1e;
-    font-family: var(--font-family-sans-serif);
     margin: 0;
     padding: 0;
 }
-hr {
-    border-top-color: #444;
+a {
+    text-decoration: none;
 }
 
 /* Navbar */
@@ -17,16 +16,13 @@ nav {
     background-color: #343a40;
     color: #fff;
     padding: 1rem;
+    margin-bottom: 1rem;
 }
-nav .container {
-    display: flex;
-    justify-content: space-between;
-}
-nav a {
+nav a { /* Page title */
     color: #fff !important;
-    text-decoration: none;
+    font-size: 20px;
 }
-nav span {
+nav span { /* Usage text */
     color: rgba(255, 255, 255, .5);
 }
 nav span img { /* Usage icon */
@@ -34,21 +30,17 @@ nav span img { /* Usage icon */
     vertical-align: text-top;
 }
 
-/* card container */
-.mirrors {
-    margin-top: 1rem;
-    display: flex;
-    justify-content: space-around;
-    flex-wrap: wrap;
-    align-content: flex-start;
+.loading {
+    color: #fff;
+    text-align: center;
 }
 
-/* card */
+/* Mirror cards */
 .mirror-card {
     display: inline-block;
     background-color: #fff;
-    width: 22%;
-    margin: 1rem;
+    width: 100%;
+    margin: 0.5rem;
     border-radius: 3px;
 }
 .mirror-header {
@@ -63,39 +55,24 @@ nav span img { /* Usage icon */
 .mirror-header-icons img {
     vertical-align: top;
 }
-.mirror-title > a {
+.mirror-title > a { /* Repo name */
     color: #007bff;
-    text-decoration: none;
 }
-.mirror-title > a img {
+.mirror-title > a img { /* Repo icon */
     height: 24px;
     vertical-align: top;
     padding-right: 0.3rem;
 }
-
 .mirror-body {
     padding: 1rem;
 }
-.mirror-body img {
+.mirror-body img { /* Status icons */
     vertical-align: top;
+    height: 18px;
+    padding-top: 2px;
 }
 .mirror-body .d-flex {
     margin-bottom: .4rem;
-}
-.mirror-body .d-flex:last-child {
-    margin-bottom: 0;
-}
-
-.scroll-y {
-    overflow-y: auto;
-}
-
-.card-body .text-left img {
-    height: 18px;
-}
-
-.modal {
-    display: none;
 }
 
 /* footer */
@@ -105,6 +82,9 @@ footer {
     line-height: 1.6rem;
     margin: 2rem 0;
 }
+footer hr {
+    margin-bottom: 1rem;
+}
 footer a {
     color: #fff;
 }
@@ -112,34 +92,38 @@ footer a:hover {
     text-decoration: underline;
 }
 
+.modal {
+    display: none;
+}
+
 /* flex */
 .d-flex {
     display: flex;
     justify-content: space-between;
-}
-.d-flex > div
-.d-flex > a,
-.d-flex > span {
-    display: inline-block;
+    flex-wrap: wrap;
 }
 
 /* .container */
 .container {
     width: 100%;
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
+    padding-left: 5px;
+    padding-right: 5px;
     margin-left: auto;
+    margin-right: auto;
 }
 @media (min-width: 576px) {
     .container { max-width: 540px; }
+    .mirror-card { width: 45%; }
 }
 @media (min-width: 768px) {
     .container { max-width: 720px; }
+    .mirror-card { width: 45%; }
 }
 @media (min-width: 992px) {
     .container { max-width: 960px; }
+    .mirror-card { width: 30%; }
 }
 @media (min-width: 1200px) {
     .container { max-width: 1140px; }
+    .mirror-card { width: 23%; }
 }

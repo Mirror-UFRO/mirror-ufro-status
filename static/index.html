@@ -13,8 +13,8 @@
 
 <div id="app">
   <nav>
-    <div class="container">
-      <a href="" class="navbar-brand">Mirror UFRO</a>
+    <div class="container d-flex">
+      <a href="">Mirror UFRO</a>
       <span v-if="data">
         <img src="/static/img/usage.svg" alt="usage">
         Usage: {{ data.disk.usedHuman }} / {{ data.disk.totalHuman }} (free: {{ data.disk.freeHuman }})
@@ -22,24 +22,24 @@
     </div>
   </nav>
 
-  <div class="container mirrors">
-    <div v-if="data" v-for="mirror in data.mirrors" class="mirror-card">
+  <div class="container d-flex" v-if="data">
+    <div v-for="mirror in data.mirrors" class="mirror-card">
       <div class="mirror-header d-flex">
         <div class="mirror-title">
-          <a :href="mirror.link" target="_blank" data-toggle="tooltip" :title="'Go to ' + mirror.name + ' website'">
-            <img v-if="mirror.logo" :src="mirror.logo" alt=""/>
+          <a :href="mirror.link" target="_blank" :title="'Go to ' + mirror.name + ' website'">
+            <img v-if="mirror.logo" :src="mirror.logo" alt="logo"/>
             <span>{{ mirror.name }}</span>
           </a>
-          <span data-toggle="tooltip" title="Official mirror" v-if="mirror.official">
+          <span title="Official mirror" v-if="mirror.official">
             <img src="/static/img/official.svg" alt="official">
           </span>
         </div>
 
         <div class="float-right mirror-header-icons">
-          <a :href="mirror.folderLink" data-toggle="tooltip" title="Explore repository files" target="_blank">
+          <a :href="mirror.folderLink" title="Explore repository files" target="_blank">
             <img src="/static/img/folder.svg" alt="folder">
           </a>
-          <a href="#" v-if="mirror.details" @click.prevent="openHelp(mirror)" data-toggle="tooltip" title="Show repository information">
+          <a href="#" v-if="mirror.details" @click.prevent="openHelp(mirror)" title="Show repository information">
             <img src="/static/img/help.svg" alt="help">
           </a>
         </div>
@@ -72,10 +72,9 @@
       </div>
     </div>
     <!-- /if:data for:data.mirrors -->
-
-    <div v-if="loading" class="text-center text-light">Loading...</div>
   </div>
 
+  <div v-if="loading" class="loading">Loading...</div>
   <footer class="container">
     <hr>
     <div>
@@ -94,16 +93,16 @@
     </div>
   </footer>
 
-  <div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="helpModalTitle" aria-hidden="true">
+  <div class="modal fade" role="dialog" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
           <div class="modal-content">
               <div class="modal-header">
-                  <h5 class="modal-title" id="helpModalTitle">Information about "{{ selrepo.name }}"</h5>
+                  <h5 class="modal-title">Information about "{{ selrepo.name }}"</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                       <span aria-hidden="true">&times;</span>
                   </button>
               </div>
-              <div class="modal-body" v-html="selrepo.details"></div>
+              <div class="modal-body" v-html="mdRender(selrepo.details)"></div>
               <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               </div>
