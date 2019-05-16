@@ -6,6 +6,11 @@ hr {
     border-top-color: #444;
 }
 
+.navbar-text img {
+    filter: opacity(.5);
+    vertical-align: text-top;
+}
+
 .card-header {
     padding: .75rem 1rem;
 }
@@ -14,12 +19,13 @@ hr {
     text-decoration: none;
 }
 
-.card-header > span i {
-    font-size: 14px;
+.card-header > span img {
+    height: 14px;
     vertical-align: inherit;
-    position: relative;
-    top: -2px;
-    color: var(--blue);
+}
+
+.mirror-header-icons img {
+    vertical-align: top;
 }
 
 .scroll-y {
@@ -37,6 +43,10 @@ hr {
 .card .float-right a,
 .card .float-right a:visited {
     color: #000;
+}
+
+.card-body .text-left img {
+    height: 18px;
 }
 
 footer a,
