@@ -57,6 +57,10 @@ nav span img { /* Usage icon */
     text-align: center;
 }
 
+.hidden {
+    display: none;
+}
+
 /* Mirror cards */
 .mirror-card {
     display: inline-block;
