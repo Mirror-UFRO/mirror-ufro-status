@@ -48,7 +48,7 @@ def status():
 def config():
     global curr_etag
 
-    if curr_etag and request.headers.get('if-none-match') == '"{}"'.format(curr_etag[0]):
+    if curr_etag and request.headers.get('if-none-match') == curr_etag:
         return Response(status=304)
 
     callback = request.args.get('callback', False)
@@ -59,7 +59,7 @@ def config():
         resp = app.response_class(repos, mimetype='application/json')
 
     resp.add_etag()
-    curr_etag = resp.get_etag()
+    curr_etag = '"{}"'.format(resp.get_etag()[0])
 
     return resp
 
