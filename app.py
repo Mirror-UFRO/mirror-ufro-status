@@ -37,7 +37,7 @@ def status():
         content = '{}({})'.format(callback, json.dumps(repos))
         response = app.response_class(content, mimetype='application/javascript')
     else:
-        response = jsonify(data, mimetype='application/json')
+        response = jsonify(data)
         response.headers['Access-Control-Allow-Origin'] = '*'
 
     return response
