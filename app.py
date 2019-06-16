@@ -7,7 +7,7 @@ import pytz
 from datetime import datetime
 
 from cacheout import memoize
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 
 from util import reverse_readline, sizeof_fmt, isint, mirror_config
 from settings import *
@@ -15,6 +15,7 @@ from settings import *
 app = Flask(__name__)
 repos = json.dumps(mirror_config())
 pat_fn = re.compile(r'^[_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*$')
+curr_etag = None
 
 
 @app.route('/status')
@@ -45,6 +46,11 @@ def status():
 
 @app.route('/config')
 def config():
+    global curr_etag
+
+    if curr_etag and request.headers.get('if-none-match') == '"{}"'.format(curr_etag[0]):
+        return Response(status=304)
+
     callback = request.args.get('callback', False)
     if callback and pat_fn.match(callback):
         content = '{}({})'.format(callback, repos)
@@ -53,6 +59,8 @@ def config():
         resp = app.response_class(repos, mimetype='application/json')
 
     resp.add_etag()
+    curr_etag = resp.get_etag()
+
     return resp
 
 
