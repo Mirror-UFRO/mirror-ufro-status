@@ -55,12 +55,4 @@ def isint(val):
 
 
 def mirror_config():
-    return {r: {**v, 'details': repohelp.get(r, '')} for r, v in sorted(repoconfig.items())}
-
-
-if __name__ == '__main__':
-    x = reverse_readline('/var/log/mirror/arch.log')
-    for k in x:
-        print(k)
-        break # just one line
-
+    return {r: {**repoconfig[r], 'details': repohelp.get(r, '')} for r in sorted(repoconfig.keys())}
