@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
+import json
 import os
+import re
 import subprocess
 import pytz
 from datetime import datetime
 
 from cacheout import memoize
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
-from util import reverse_readline, sizeof_fmt, isint
+from util import reverse_readline, sizeof_fmt, isint, mirror_config
 from settings import *
 
 app = Flask(__name__)
+repos = json.dumps(mirror_config())
+pat_fn = re.compile(r'^[_$a-zA-Z\xA0-\uFFFF][_$a-zA-Z0-9\xA0-\uFFFF]*$')
 
 
 @app.route('/status')
@@ -22,14 +26,34 @@ def status():
     mirror_files = os.listdir(mirror_path)
     resp = {d: mirror_info(d) for d in mirror_files if valid_mirror_dir(d)}
 
-    response = jsonify({
+    data = {
         'mirrors': resp,
         'disk': disk_usage(),
         '_ms': (datetime.now() - start_time).total_seconds() * 1000
-    })
+    }
 
-    response.headers['Access-Control-Allow-Origin'] = '*'
+    callback = request.args.get('callback', False)
+    if callback and pat_fn.match(callback):
+        content = '{}({})'.format(callback, json.dumps(repos))
+        response = app.response_class(content, mimetype='application/javascript')
+    else:
+        response = jsonify(data, mimetype='application/json')
+        response.headers['Access-Control-Allow-Origin'] = '*'
+
     return response
+
+
+@app.route('/config')
+def config():
+    callback = request.args.get('callback', False)
+    if callback and pat_fn.match(callback):
+        content = '{}({})'.format(callback, repos)
+        resp = app.response_class(content, mimetype='application/javascript')
+    else:
+        resp = app.response_class(repos, mimetype='application/json')
+
+    resp.add_etag()
+    return resp
 
 
 @memoize(ttl=15)

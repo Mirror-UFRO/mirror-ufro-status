@@ -1,5 +1,8 @@
 import os
 
+from settings import repoconfig, repohelp
+
+
 def reverse_readline(filename, buf_size=8192):
     # https://stackoverflow.com/a/23646049
     """a generator that returns the lines of a file in reverse order"""
@@ -49,6 +52,10 @@ def isint(val):
         return True
     except ValueError:
         return False
+
+
+def mirror_config():
+    return {d: {**repoconfig[d], 'details': repohelp.get(d, '')} for d in repoconfig.keys()}
 
 
 if __name__ == '__main__':
