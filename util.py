@@ -39,9 +39,9 @@ def reverse_readline(filename, buf_size=8192):
 
 def sizeof_fmt(num, suffix='B'):
     # https://stackoverflow.com/a/1094933
-    for unit in ['','Ki','Mi','Gi','Ti','Pi','Ei','Zi']:
+    for unit in ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']:
         if abs(num) < 1024.0:
-             return "%3.2f%s%s" % (num, unit, suffix)
+            return "%3.2f%s%s" % (num, unit, suffix)
         num /= 1024.0
     return "%.2f%s%s" % (num, 'Yi', suffix)
 
@@ -55,7 +55,7 @@ def isint(val):
 
 
 def mirror_config():
-    return {d: {**repoconfig[d], 'details': repohelp.get(d, '')} for d in repoconfig.keys()}
+    return {r: {**v, 'details': repohelp.get(r, '')} for r, v in sorted(repoconfig.items())}
 
 
 if __name__ == '__main__':
