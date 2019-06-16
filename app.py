@@ -34,7 +34,7 @@ def status():
 
     callback = request.args.get('callback', False)
     if callback and pat_fn.match(callback):
-        content = '{}({})'.format(callback, json.dumps(repos))
+        content = '{}({})'.format(callback, json.dumps(data))
         response = app.response_class(content, mimetype='application/javascript')
     else:
         response = jsonify(data)
